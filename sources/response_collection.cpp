@@ -30,21 +30,53 @@ void ResponseCollection::updateCollection() {
   input.close();
 }
 
+struct Entry {
+  std::string suggestion;
+  size_t weight;
+};
+
+bool operator<(const Entry& lhs, const Entry& rhs) {
+  return lhs.weight < rhs.weight;
+}
+
+std::vector<Entry> findMatches(const std::string& req_str,
+                               const nlohmann::json& json) {
+  std::vector<Entry> matches;
+
+  for (auto& x : json) {
+    if (x["id"] == req_str)
+      matches.push_back({x["name"], x["cost"]});
+  }
+
+  std::sort(matches.begin(), matches.end());
+  return matches;
+}
+
 std::string ResponseCollection::getResponse(std::string_view req_json_str) {
   nlohmann::json request{};
-  nlohmann::json response = nlohmann::json::array();
+  nlohmann::json response{};
   std::string req_str{};
   try {
     request = nlohmann::json::parse(req_json_str);
     req_str = request["input"];
   } catch (...) {
-    response.push_back(R"({ "status": "ill-formated request" })");
+    response = nlohmann::json::parse(R"({ "status": "ill-formated request" })");
     return response.dump();
   }
-  std::cout << req_str << std::endl;
+
   m_mutex.lock_shared();
-  //TODO: add actual response generation
+  std::vector<Entry> suggestions = findMatches(req_str, m_json);
   m_mutex.unlock_shared();
+
+  response = nlohmann::json::parse(R"({ "suggestions": [] })");
+  for (size_t i = 0; i < suggestions.size(); ++i) {
+    nlohmann::json entry =
+        nlohmann::json::parse(R"({ "text": "hello", "position": 0 })");
+    entry["text"] = std::move(suggestions[i].suggestion);
+    entry["position"] = i;
+    response["suggestions"].push_back(entry);
+  }
+
   return response.dump();
 }
 
