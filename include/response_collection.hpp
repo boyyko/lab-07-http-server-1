@@ -6,6 +6,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <string>
 #include <shared_mutex>
 
 class ResponseCollection {

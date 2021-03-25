@@ -40,7 +40,7 @@ void workerFunction(boost::asio::ip::tcp::socket&& socket,
     boost::beast::http::request<boost::beast::http::string_body> req;
     boost::beast::http::read(socket, buffer, req, ec);
 
-    if(ec == boost::beast::http::error::end_of_stream)
+    if (ec == boost::beast::http::error::end_of_stream)
       break;
 
     if ((req.method() != boost::beast::http::verb::post) ||
@@ -75,7 +75,7 @@ void workerFunction(boost::asio::ip::tcp::socket&& socket,
 
 AutoCompleteServer::AutoCompleteServer(std::string_view rootDirectory,
                                        boost::asio::ip::address address,
-                                       unsigned short port)
+                                       uint16_t port)
   : m_rootDirectory(rootDirectory)
   , m_address(std::move(address))
   , m_port(port)
@@ -87,7 +87,7 @@ AutoCompleteServer::~AutoCompleteServer() = default;
   boost::asio::io_context ioc{1};
   boost::asio::ip::tcp::acceptor acceptor{ioc, {m_address, m_port}};
 
-  for(;;)
+  for (;;)
   {
     boost::asio::ip::tcp::socket socket{ioc};
     acceptor.accept(socket);

@@ -12,7 +12,7 @@ class AutoCompleteServer {
  public:
   AutoCompleteServer(std::string_view rootDirectory,
                      boost::asio::ip::address address,
-                     unsigned short port);
+                     uint16_t port);
   ~AutoCompleteServer();
 
   [[noreturn]] void startServer();
@@ -20,7 +20,7 @@ class AutoCompleteServer {
  private:
   const std::string m_rootDirectory;
   boost::asio::ip::address m_address;
-  unsigned short m_port;
+  uint16_t m_port;
 };
 
 #endif  // INCLUDE_AUTO_COMPLETE_SERVER_HPP_
