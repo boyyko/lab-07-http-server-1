@@ -73,10 +73,10 @@ void workerFunction(boost::asio::ip::tcp::socket&& socket,
   socket.shutdown(boost::asio::ip::tcp::socket::shutdown_send);
 }
 
-AutoCompleteServer::AutoCompleteServer(std::string_view rootDirectory,
+AutoCompleteServer::AutoCompleteServer(std::string_view requestDirectory,
                                        boost::asio::ip::address address,
                                        uint16_t port)
-  : m_rootDirectory(rootDirectory)
+  : m_requestDirectory(requestDirectory)
   , m_address(std::move(address))
   , m_port(port)
 {}
@@ -91,6 +91,6 @@ AutoCompleteServer::~AutoCompleteServer() = default;
   {
     boost::asio::ip::tcp::socket socket{ioc};
     acceptor.accept(socket);
-    std::thread{workerFunction, std::move(socket), m_rootDirectory}.detach();
+    std::thread{workerFunction, std::move(socket), m_requestDirectory}.detach();
   }
 }

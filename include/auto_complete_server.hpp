@@ -10,7 +10,7 @@
 
 class AutoCompleteServer {
  public:
-  AutoCompleteServer(std::string_view rootDirectory,
+  AutoCompleteServer(std::string_view requestDirectory,
                      boost::asio::ip::address address,
                      uint16_t port);
   ~AutoCompleteServer();
@@ -18,7 +18,7 @@ class AutoCompleteServer {
   [[noreturn]] void startServer();
 
  private:
-  const std::string m_rootDirectory;
+  const std::string m_requestDirectory;
   boost::asio::ip::address m_address;
   uint16_t m_port;
 };
